@@ -6,9 +6,9 @@
     <title>Formulario con Dibujo</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f3f6f9;
+            color: #495057;
             margin: 0;
             padding: 0;
         }
@@ -17,34 +17,59 @@
             max-width: 600px;
             margin: 50px auto;
             padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background-color: #ffffff;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
         }
 
         h2 {
             text-align: center;
-            color: #2a9df4;
+            color: #0061f2;
+            font-size: 24px;
+            margin-bottom: 20px;
         }
 
         label {
             display: block;
             margin: 10px 0 5px;
-            font-weight: bold;
+            font-weight: 500;
+            font-size: 14px;
         }
 
         input[type="text"],
         input[type="number"],
         button {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             margin-bottom: 15px;
-            border: 1px solid #ccc;
+            border: 1px solid #ced4da;
             border-radius: 5px;
+            font-size: 14px;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        button:focus {
+            outline: none;
+            border-color: #0061f2;
+            box-shadow: 0 0 4px rgba(0, 97, 242, 0.3);
+        }
+
+        button {
+            background-color: #0061f2;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0046c3;
         }
 
         canvas {
-            border: 1px solid #ccc;
+            border: 1px solid #ced4da;
             margin: 10px 0;
             display: block;
             width: 100%;
@@ -56,15 +81,16 @@
             justify-content: space-between;
         }
 
-        button {
-            background-color: #2a9df4;
-            color: white;
-            border: none;
-            cursor: pointer;
+        .button-group button {
+            width: 48%;
         }
 
-        button:hover {
-            background-color: #1d78c7;
+        .button-clear {
+            background-color: #dc3545;
+        }
+
+        .button-clear:hover {
+            background-color: #a71d2a;
         }
     </style>
 </head>
@@ -90,10 +116,9 @@
             <label for="dibujo">Dibujo</label>
             <canvas id="canvas"></canvas>
             <div class="button-group">
-                <button type="button" onclick="clearCanvas()">Limpiar</button>
+                <button type="button" class="button-clear" onclick="clearCanvas()">Limpiar</button>
+                <button type="submit">Enviar</button>
             </div>
-
-            <button type="submit">Enviar</button>
         </form>
     </div>
 
@@ -148,7 +173,6 @@
 
                 console.log("Estado de la respuesta:", response.status);
 
-                // Si `no-cors` está configurado, no podremos leer `response.json()`
                 if (!response.ok) {
                     throw new Error("No se pudo enviar la solicitud al servidor.");
                 }
