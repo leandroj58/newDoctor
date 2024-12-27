@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario con Dibujo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .form-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #2a9df4;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        canvas {
+            border: 1px solid #ccc;
+            margin: 10px 0;
+            display: block;
+            width: 100%;
+            height: 300px;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        button {
+            background-color: #2a9df4;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #1d78c7;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Formulario de Registro</h2>
+        <form id="form">
+            <label for="nombre">Nombre</label>
+            <input type="text" id="nombre" name="nombre" required>
+
+            <label for="apellido">Apellido</label>
+            <input type="text" id="apellido" name="apellido" required>
+
+            <label for="especialidad">Especialidad</label>
+            <input type="text" id="especialidad" name="especialidad" required>
+
+            <label for="matricula">Matrícula</label>
+            <input type="text" id="matricula" name="matricula" required>
+
+            <label for="dni">DNI</label>
+            <input type="number" id="dni" name="dni" required>
+
+            <label for="dibujo">Dibujo</label>
+            <canvas id="canvas"></canvas>
+            <div class="button-group">
+                <button type="button" onclick="clearCanvas()">Limpiar</button>
+            </div>
+
+            <button type="submit">Enviar</button>
+        </form>
+    </div>
+
+    <script>
+        // Configuración del canvas
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let drawing = false;
+
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+
+        canvas.addEventListener('mousedown', () => (drawing = true));
+        canvas.addEventListener('mouseup', () => (drawing = false));
+        canvas.addEventListener('mousemove', draw);
+
+        function draw(e) {
+            if (!drawing) return;
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            ctx.lineTo(x, y);
+            ctx.stroke();
+        }
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        // Enviar datos del formulario
+        document.getElementById('form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const nombre = document.getElementById('nombre').value;
+            const apellido = document.getElementById('apellido').value;
+            const especialidad = document.getElementById('especialidad').value;
+            const matricula = document.getElementById('matricula').value;
+            const dni = document.getElementById('dni').value;
+
+            const dibujo = canvas.toDataURL('image/png'); // Convierte el dibujo a Base64
+
+            const data = {
+                nombre,
+                apellido,
+                especialidad,
+                matricula,
+                dni,
+                dibujo
+            };
+
+            try {
+                const response = await fetch('https://script.google.com/macros/s/AKfycbxI-FthqNnu3pfgxnCfBDiKia1XbF6BqkxpUOdkDsOmVkFwpGBxCLpfLAjJGmHcOiw/exec', {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                mode: 'no-cors'
+            });
+
+                const result = await response.json();
+                if (result.success) {
+                    alert(result.message);
+                } else {
+                    alert("Hubo un problema al guardar los datos.");
+                }
+            } catch (error) {
+                console.error("Error:", error.message);
+                alert("Error al enviar los datos. Detalles en la consola.");
+            }
+        });
+    </script>
+</body>
+</html>
